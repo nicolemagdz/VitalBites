@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - VitalBites</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <script src="analytics.js" defer></script>
+    <script src="weekly-analytics.js"></script>
+    <script src="monthly-analytics.js"></script>
+</head>
+<body id="top">
+    <header>
+        <div id="header-content">
+            <a href="home.html" id="home-icon">
+                <img src="favicon.ico" alt="VitalBites Logo">
+            </a>
+            <div id="header-text">
+                <p>VitalBites</p>
+                <p>Nutrition</p>
+                <p>Tracker</p>
+            </div>
+        </div>
+        <nav class="menu-bar">
+            <a href="home.html" class="menu-item">Home</a>
+            <a href="about.html" class="menu-item">About Us</a>
+            <a href="food-data.html" class="menu-item">FoodData Central</a>
+            <a href="contact.html" class="menu-item">Contact Us</a>
+            <a href="log-meals.html" class="menu-item">Log Meals</a>
+        </nav>
+    </header>
+    <main>
+        <section id="analytics">
+            <h2>Analytics</h2>
+            <button id="view-weekly">View Weekly Summary</button>
+            <button id="view-monthly">View Monthly Summary</button>
+            <div id="analytics-content">
+                <p>Weekly and Monthly Summaries will appear here.</p>
+            </div>
+        </section>
+
+        <section id="weekly-analytics" class="hidden">
+            <h2>Weekly Analytics</h2>
+            <div id="weekly-calendar">
+                <button id="prev-week">&lt; Previous Week</button>
+                <span id="week-range"></span>
+                <button id="next-week">Next Week &gt;</button>
+            </div>
+            <div id="weekly-data">
+                <!--Weekly Data Here-->
+            </div>
+        </section>
+
+        <section id="monthly-analytics" class="hidden">
+            <h2>Monthly Analytics</h2>
+            <div id="monthly-calendar">
+                <button id="prev-month">&lt; Previous Month</button>
+                <span id="month-range"></span>
+                <button id="next-month">Next Month &gt;</button>
+            </div>
+            <div id="monthly-data">
+                <!--Monthly Data Here-->
+            </div>
+        </section>
+
+        <section id="edit-delete">
+            <h2>Manage Logged Meals</h2>
+            <ul id="meal-list">
+                <li>
+                    <span>Meal 1: Grilled Chicken - 200g</span>
+                    <button class="edit-meal">Edit</button>
+                    <button class="delete-meal">Delete</button>
+                </li>
+                <li>
+                    <span>Meal 2: Caesar Salad - 150g</span>
+                    <button class="edit-meal">Edit</button>
+                    <button class="delete-meal">Delete</button>
+                </li>
+            </ul>
+        </section>
+
+        <div id="edit-popup" class="popup hidden">
+            <div class="popup-content">
+                <h3>Edit Meal</h3>
+                <form id="edit-form">
+                    <label for="edit-food">Food Item:</label>
+                    <input type="text" id="edit-food" required>
+
+                    <label for="edit-portion">Portion Size:</label>
+                    <input type="text" id="edit-portion" required>
+
+                    <div class="popup-buttons">
+                        <button type="submit">Save Changes</button>
+                        <button type="button" id="cancel-edit">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="delete-popup" class="popup hidden">
+            <div class="popup-content">
+                <h3>Are you sure?</h3>
+                <p id="delete-message"></p>
+                <div class="popup-buttons">
+                    <button id="confirm-delete">Delete</button>
+                    <button id="cancel-delete">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <a href="#top" id="return-to-top">Return to top</a>
+        <nav class="menu-bar">
+            <a href="home.html" class="menu-item">Home</a>
+            <a href="about.html" class="menu-item">About Us</a>
+            <a href="food-data.html" class="menu-item">FoodData Central</a>
+            <a href="contact.html" class="menu-item">Contact</a>
+            <a href="log-meals.html" class="menu-item">Log Meals</a>
+        </nav>
+        <div id="footer-content">
+            <a href="home.html">
+                <img src="favicon.ico" alt="VitalBites Logo">
+            </a>
+            <p>VitalBites Nutrition Tracker</p>
+            <p>&copy; Copyright 2024 - VitalBites</p>
+        </div>
+    </footer>
+</body>
+</html>

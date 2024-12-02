@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about VitalBites, your go-to nutrition tracker for logging meals, analyzing food data, and achieving your dietary goals.">
+    <title>Log Meals - VitalBites</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="log-meals.js" defer></script>
+</head>
+<body id="top">
+    <header>
+        <div id="header-content">
+            <a href="home.html" id="home-icon">
+                <img src="favicon.ico" alt="VitalBites Logo">
+            </a>
+            <div id="header-text">
+                <p>VitalBites</p>
+                <p>Nutrition</p>
+                <p>Tracker</p>
+            </div>
+        </div>
+        <nav class="menu-bar">
+            <a href="home.html" class="menu-item">Home</a>
+            <a href="about.html" class="menu-item">About Us</a>
+            <a href="food-data.html" class="menu-item">FoodData Central</a>
+            <a href="contact.html" class="menu-item">Contact Us</a>
+            <a href="log-meals.html" class="menu-item active" aria-current="page">Log Meals</a>
+        </nav>
+    </header>
+    <main>
+        <section id="log-meals">
+            <h2>Log Your Meals</h2>
+            <p>Enter the details of your meals here.</p>
+            <form id="meal-form">
+                <label for="food-item">Food Item:</label>
+                <input type="text" id="food-item" name="food-item" placeholder="Enter food" required>
+        
+                <label for="portion-size">Portion Size:</label>
+                <input type="text" id="portion-size" name="portion-size" placeholder="e.g., '1 cup', '200g'" required>
+
+                <label for="meal-date">Date:</label>
+                <input type="date" id="meal-date" name="meal-date" required>
+        
+                <button type="submit">Log Meal</button>
+            </form>
+
+            <div id="success-message" role="alert" style="display: none;">Meal successfully logged!</div>
+
+            <ul id="meal-list"></ul>
+        </section>
+        <section id="analytics">
+            <h2>Analytics</h2>
+            <a href="analytics.html">
+                <button id="view-analytics" class="btn">View Analytics</button>
+            </a>
+        </section>
+    </main>
+    <footer>
+        <a href="#top" id="return-to-top">Return to top</a>
+        <nav class="menu-bar">
+            <a href="home.html" class="menu-item">Home</a>
+            <a href="about.html" class="menu-item">About Us</a>
+            <a href="food-data.html" class="menu-item">FoodData Central</a>
+            <a href="contact.html" class="menu-item">Contact</a>
+            <a href="log-meals.html" class="menu-item active" aria-current="page">Log Meals</a>
+        </nav>
+        <div id="footer-content">
+            <a href="home.html">
+                <img src="favicon.ico" alt="VitalBites Logo">
+            </a>
+            <p>VitalBites Nutrition Tracker</p>
+            <p>&copy; Copyright 2024 - VitalBites</p>
+        </div>
+    </footer>
+</body>
+</html>
