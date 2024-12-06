@@ -32,10 +32,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderWeeklyAnalytics = async () => {
         if (currentWeekStart === null || currentWeekEnd === null) return;
 
+        // Filter meals based on the current week range
         const weeklyMeals = meals.filter(meal => {
             const mealDate = new Date(meal.date);
             return mealDate >= currentWeekStart && mealDate <= currentWeekEnd;
         });
+
+        // If no meals are logged for this week, render the default table
+        if (weeklyMeals.length === 0) {
+            weekRange.textContent = `${formatDate(currentWeekStart)} - ${formatDate(currentWeekEnd)}`;
+            weeklyData.innerHTML = `
+                <div id="left-column">
+                    <p>Total Meals Logged: 0</p>
+                    <ul>
+                        <li>No meals logged for this week.</li>
+                    </ul>
+                </div>
+                <div class="right-column">
+                    <h2>Nutritional Summary:</h2>
+                    <table class="nutrition-table">
+                        <tr><th>Nutrient</th><th>Value</th></tr>
+                        <tr><td>Total Calories</td><td>0 kcal</td></tr>
+                        <tr><td>Total Fat</td><td>0 g</td></tr>
+                        <tr><td>Saturated Fat</td><td>0 g</td></tr>
+                        <tr><td>Trans Fat</td><td>0 g</td></tr>
+                        <tr><td>Cholesterol</td><td>0 mg</td></tr>
+                        <tr><td>Sodium</td><td>0 mg</td></tr>
+                        <tr><td>Total Carbohydrates</td><td>0 g</td></tr>
+                        <tr><td>Dietary Fiber</td><td>0 g</td></tr>
+                        <tr><td>Total Sugars</td><td>0 g</td></tr>
+                        <tr><td>Protein</td><td>0 g</td></tr>
+                    </table>
+                    <h4>Rich Vitamins:</h4>
+                    <p>Insufficient data for rich vitamins.</p>
+                    <h4>Rich Minerals:</h4>
+                    <p>Insufficient data for rich minerals.</p>
+                </div>
+            `;
+            return;
+        }
 
         weekRange.textContent = `${formatDate(currentWeekStart)} - ${formatDate(currentWeekEnd)}`;
 
@@ -52,7 +87,22 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="right-column">
                 <h2>Nutritional Summary:</h2>
                 <table class="nutrition-table">
-                    <tr><th>Nutrient</th><th>Value</th></tr>
+                    <tr><td>Total Calories</td><td>0 kcal</td></tr>
+                    <tr><td>Total Fat</td><td>0 g</td></tr>
+                    <tr><td>Saturated Fat</td><td>0 g</td></tr>
+                    <tr><td>Trans Fat</td><td>0 g</td></tr>
+                    <tr><td>Cholesterol</td><td>0 mg</td></tr>
+                    <tr><td>Sodium</td><td>0 mg</td></tr>
+                    <tr><td>Total Carbohydrates</td><td>0 g</td></tr>
+                    <tr><td>Dietary Fiber</td><td>0 g</td></tr>
+                    <tr><td>Total Sugars</td><td>0 g</td></tr>
+                    <tr><td>Protein</td><td>0 g</td></tr>
+                </table>
+                <h4>Rich Vitamins:</h4>
+                <p>Insufficient data for rich vitamins.</p>
+                <h4>Rich Minerals:</h4>
+                <p>Insufficient data for rich minerals.</p>
+            </div>
         `;
 
         const foodDetails = weeklyMeals.map(meal => meal.food).join(',');
@@ -60,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${foodDetails}&api_key=FtBPJ1szonFLDYUrYeDhFkE2RGOlrQEQzHdJdohg`);
             const data = await response.json();
 
-            if(data.foods) {
+            if (data.foods) {
                 let totalCalories = 0;
                 let totalFat = 0;
                 let totalSaturatedFat = 0;
@@ -130,67 +180,62 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 });
 
-                rightColumnHTML += `
-                    <tr><td>Total Calories</td><td>${Math.round(totalCalories)} kcal</td></tr>
-                    <tr><td>Total Fat</td><td>${Math.round(totalFat)} g</td></tr>
-                    <tr><td>Saturated Fat</td><td>${Math.round(totalSaturatedFat)} g</td></tr>
-                    <tr><td>Trans Fat</td><td>${Math.round(totalTransFat)} g</td></tr>
-                    <tr><td>Cholesterol</td><td>${Math.round(totalCholesterol)} mg</td></tr>
-                    <tr><td>Sodium</td><td>${Math.round(totalSodium)} mg</td></tr>
-                    <tr><td>Total Carbohydrates</td><td>${Math.round(totalCarbs)} g</td></tr>
-                    <tr><td>Dietary Fiber</td><td>${Math.round(totalFiber)} g</td></tr>
-                    <tr><td>Total Sugars</td><td>${Math.round(totalSugar)} g</td></tr>
-                    <tr><td>Protein</td><td>${Math.round(totalProtein)} g</td></tr>
-                    <h4>Rich Vitamins:</h4>
-                    ${
-                        vitamins.length > 0
-                            ? `<ul>${vitamins.map(vit => `<li>${vit}</li>`).join('')}</ul>`
-                            : '<p>Insufficient data for rich vitamins.</p>'
-                    }
-                    <h4>Rich Minerals:</h4>
-                    ${
-                        minerals.length > 0
-                            ? `<ul>${minerals.map(mineral => `<li>${mineral}</li>`).join('')}</ul>`
-                            : '<p>Insufficient data for rich minerals.</p>'
-                    }
+                rightColumnHTML = `
+                    <div class="right-column">
+                        <h2>Nutritional Summary:</h2>
+                        <table class="nutrition-table">
+                            <tr><td>Total Calories</td><td>${Math.round(totalCalories)} kcal</td></tr>
+                            <tr><td>Total Fat</td><td>${Math.round(totalFat)} g</td></tr>
+                            <tr><td>Saturated Fat</td><td>${Math.round(totalSaturatedFat)} g</td></tr>
+                            <tr><td>Trans Fat</td><td>${Math.round(totalTransFat)} g</td></tr>
+                            <tr><td>Cholesterol</td><td>${Math.round(totalCholesterol)} mg</td></tr>
+                            <tr><td>Sodium</td><td>${Math.round(totalSodium)} mg</td></tr>
+                            <tr><td>Total Carbohydrates</td><td>${Math.round(totalCarbs)} g</td></tr>
+                            <tr><td>Dietary Fiber</td><td>${Math.round(totalFiber)} g</td></tr>
+                            <tr><td>Total Sugars</td><td>${Math.round(totalSugar)} g</td></tr>
+                            <tr><td>Protein</td><td>${Math.round(totalProtein)} g</td></tr>
+                        </table>
+                        <h4>Rich Vitamins:</h4>
+                        <p>${vitamins.length ? vitamins.join('<br>') : 'Insufficient data for rich vitamins.'}</p>
+                        <h4>Rich Minerals:</h4>
+                        <p>${minerals.length ? minerals.join('<br>') : 'Insufficient data for rich minerals.'}</p>
+                    </div>
                 `;
+            } else {
+                console.error('No data found for the provided food items.');
             }
-
-            rightColumnHTML += '</div>';
-            weeklyData.innerHTML = leftColumnHTML + rightColumnHTML;
-            
         } catch (error) {
-            console.error('Error fetching FoodData Central data:', error);
+            console.error('Error fetching nutritional data:', error);
         }
+
+        weeklyData.innerHTML = leftColumnHTML + rightColumnHTML;
     };
 
-    const changeWeek = (direction) => {
-        const newStartDate = new Date(currentWeekStart);
-        newStartDate.setDate(currentWeekStart.getDate() + direction * 7);
-        const newWeekRange = getWeekRange(newStartDate);
+    const updateWeekRange = () => {
+        const now = new Date();
+        const { start, end } = getWeekRange(now);
 
-        currentWeekStart = newWeekRange.start;
-        currentWeekEnd = newWeekRange.end;
-
+        currentWeekStart = start;
+        currentWeekEnd = end;
         renderWeeklyAnalytics();
     };
 
     viewWeeklyButton.addEventListener('click', () => {
-        const currentDate = new Date();
-        const weekRange = getWeekRange(currentDate);
-
-        currentWeekStart = weekRange.start;
-        currentWeekEnd = weekRange.end;
-
-        weeklyAnalyticsSection.classList.toggle('hidden');
-        renderWeeklyAnalytics();
+        weeklyAnalyticsSection.style.display = 'block';
+        updateWeekRange();
     });
 
     prevWeekButton.addEventListener('click', () => {
-        changeWeek(-1);
+        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+        currentWeekEnd.setDate(currentWeekEnd.getDate() - 7);
+        renderWeeklyAnalytics();
     });
 
     nextWeekButton.addEventListener('click', () => {
-        changeWeek(1);
+        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+        currentWeekEnd.setDate(currentWeekEnd.getDate() + 7);
+        renderWeeklyAnalytics();
     });
+
+    updateWeekRange();
 });

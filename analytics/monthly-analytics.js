@@ -26,33 +26,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const formatMonth = (date) => {
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
-        return `${month}/${year}`;
+        return `${month}/${year}`; // Just return month/year
     };
 
     const renderMonthlyAnalytics = async () => {
         if (currentMonthStart === null || currentMonthEnd === null) return;
 
+        // Filter meals based on the current month range
         const monthlyMeals = meals.filter(meal => {
             const mealDate = new Date(meal.date);
             return mealDate >= currentMonthStart && mealDate <= currentMonthEnd;
         });
 
-        monthRange.textContent = formatMonth(currentMonthStart);
+        // If no meals are logged for this month, render the default table
+        if (monthlyMeals.length === 0) {
+            monthRange.textContent = formatMonth(currentMonthStart); // Display only current month
+            monthlyData.innerHTML = `
+                <div id="left-column">
+                    <p>Total Meals Logged: 0</p>
+                    <ul>
+                        <li>No meals logged for this month.</li>
+                    </ul>
+                </div>
+                <div class="right-column">
+                    <h2>Nutritional Summary:</h2>
+                    <table class="nutrition-table">
+                        <tr><th>Nutrient</th><th>Value</th></tr>
+                        <tr><td>Total Calories</td><td>0 kcal</td></tr>
+                        <tr><td>Total Fat</td><td>0 g</td></tr>
+                        <tr><td>Saturated Fat</td><td>0 g</td></tr>
+                        <tr><td>Trans Fat</td><td>0 g</td></tr>
+                        <tr><td>Cholesterol</td><td>0 mg</td></tr>
+                        <tr><td>Sodium</td><td>0 mg</td></tr>
+                        <tr><td>Total Carbohydrates</td><td>0 g</td></tr>
+                        <tr><td>Dietary Fiber</td><td>0 g</td></tr>
+                        <tr><td>Total Sugars</td><td>0 g</td></tr>
+                        <tr><td>Protein</td><td>0 g</td></tr>
+                    </table>
+                    <h4>Rich Vitamins:</h4>
+                    <p>Insufficient data for rich vitamins.</p>
+                    <h4>Rich Minerals:</h4>
+                    <p>Insufficient data for rich minerals.</p>
+                </div>
+            `;
+            return;
+        }
+
+        monthRange.textContent = formatMonth(currentMonthStart); // Display only current month
 
         const leftColumnHTML = `
-            <div class="left-column">
+            <div id="left-column">
                 <p>Total Meals Logged: ${monthlyMeals.length}</p>
                 <ul>
-                    ${monthlyMeals.map(meal => `<li>${meal.food} - ${meal.portion} on ${meal.date}</li>`).join('')}
+                    ${monthlyMeals.map(meal => `<li>${meal.food} - ${meal.portion} - ${meal.date}</li>`).join('')}
                 </ul>
             </div>
         `;
 
-        let rightColumnHTML =  `
+        let rightColumnHTML = `
             <div class="right-column">
                 <h2>Nutritional Summary:</h2>
                 <table class="nutrition-table">
-                    <tr><th>Nutrient</th><th>Value</th></tr>
+                    <tr><td>Total Calories</td><td>0 kcal</td></tr>
+                    <tr><td>Total Fat</td><td>0 g</td></tr>
+                    <tr><td>Saturated Fat</td><td>0 g</td></tr>
+                    <tr><td>Trans Fat</td><td>0 g</td></tr>
+                    <tr><td>Cholesterol</td><td>0 mg</td></tr>
+                    <tr><td>Sodium</td><td>0 mg</td></tr>
+                    <tr><td>Total Carbohydrates</td><td>0 g</td></tr>
+                    <tr><td>Dietary Fiber</td><td>0 g</td></tr>
+                    <tr><td>Total Sugars</td><td>0 g</td></tr>
+                    <tr><td>Protein</td><td>0 g</td></tr>
+                </table>
+                <h4>Rich Vitamins:</h4>
+                <p>Insufficient data for rich vitamins.</p>
+                <h4>Rich Minerals:</h4>
+                <p>Insufficient data for rich minerals.</p>
+            </div>
         `;
 
         const foodDetails = monthlyMeals.map(meal => meal.food).join(',');
@@ -60,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${foodDetails}&api_key=FtBPJ1szonFLDYUrYeDhFkE2RGOlrQEQzHdJdohg`);
             const data = await response.json();
 
-            if(data.foods) {
+            if (data.foods) {
                 let totalCalories = 0;
                 let totalFat = 0;
                 let totalSaturatedFat = 0;
@@ -130,68 +180,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 });
 
-                rightColumnHTML += `
-                    <tr><td>Total Calories</td><td>${Math.round(totalCalories)} kcal</td></tr>
-                    <tr><td>Total Fat</td><td>${Math.round(totalFat)} g</td></tr>
-                    <tr><td>Saturated Fat</td><td>${Math.round(totalSaturatedFat)} g</td></tr>
-                    <tr><td>Trans Fat</td><td>${Math.round(totalTransFat)} g</td></tr>
-                    <tr><td>Cholesterol</td><td>${Math.round(totalCholesterol)} mg</td></tr>
-                    <tr><td>Sodium</td><td>${Math.round(totalSodium)} mg</td></tr>
-                    <tr><td>Total Carbohydrates</td><td>${Math.round(totalCarbs)} g</td></tr>
-                    <tr><td>Dietary Fiber</td><td>${Math.round(totalFiber)} g</td></tr>
-                    <tr><td>Total Sugars</td><td>${Math.round(totalSugar)} g</td></tr>
-                    <tr><td>Protein</td><td>${Math.round(totalProtein)} g</td></tr>
-                    <h4>Rich Vitamins:</h4>
-                    ${
-                        vitamins.length > 0
-                            ? `<ul>${vitamins.map(vit => `<li>${vit}</li>`).join('')}</ul>`
-                            : '<p>Insufficient data for rich vitamins.</p>'
-                    }
-                    <h4>Rich Minerals:</h4>
-                    ${
-                        minerals.length > 0
-                            ? `<ul>${minerals.map(mineral => `<li>${mineral}</li>`).join('')}</ul>`
-                            : '<p>Insufficient data for rich minerals.</p>'
-                    }
+                rightColumnHTML = `
+                    <div class="right-column">
+                        <h2>Nutritional Summary:</h2>
+                        <table class="nutrition-table">
+                            <tr><td>Total Calories</td><td>${Math.round(totalCalories)} kcal</td></tr>
+                            <tr><td>Total Fat</td><td>${Math.round(totalFat)} g</td></tr>
+                            <tr><td>Saturated Fat</td><td>${Math.round(totalSaturatedFat)} g</td></tr>
+                            <tr><td>Trans Fat</td><td>${Math.round(totalTransFat)} g</td></tr>
+                            <tr><td>Cholesterol</td><td>${Math.round(totalCholesterol)} mg</td></tr>
+                            <tr><td>Sodium</td><td>${Math.round(totalSodium)} mg</td></tr>
+                            <tr><td>Total Carbohydrates</td><td>${Math.round(totalCarbs)} g</td></tr>
+                            <tr><td>Dietary Fiber</td><td>${Math.round(totalFiber)} g</td></tr>
+                            <tr><td>Total Sugars</td><td>${Math.round(totalSugar)} g</td></tr>
+                            <tr><td>Protein</td><td>${Math.round(totalProtein)} g</td></tr>
+                        </table>
+                        <h4>Rich Vitamins:</h4>
+                        <ul>
+                            ${vitamins.length > 0 ? vitamins.map(vitamin => `<li>${vitamin}</li>`).join('') : '<li>No rich vitamins found</li>'}
+                        </ul>
+                        <h4>Rich Minerals:</h4>
+                        <ul>
+                            ${minerals.length > 0 ? minerals.map(mineral => `<li>${mineral}</li>`).join('') : '<li>No rich minerals found</li>'}
+                        </ul>
+                    </div>
                 `;
             }
-
-            rightColumnHTML += '</div>';
-            monthlyData.innerHTML = leftColumnHTML + rightColumnHTML;
-            
         } catch (error) {
-            console.error('Error fetching FoodData Central data:', error);
+            console.error('Error fetching nutrition data:', error);
         }
-    };
 
-    const changeMonth = (direction) => {
-        const newStartDate = new Date(currentMonthStart);
-        newStartDate.setMonth(currentMonthStart.getMonth() + direction);
-        const newMonthRange = getMonthRange(newStartDate);
-
-        currentMonthStart = newMonthRange.start;
-        currentMonthEnd = newMonthRange.end;
-
-        renderMonthlyAnalytics();
+        monthlyData.innerHTML = leftColumnHTML + rightColumnHTML;
     };
 
     viewMonthlyButton.addEventListener('click', () => {
         const currentDate = new Date();
-        const monthRange = getMonthRange(currentDate);
-
-        currentMonthStart = monthRange.start;
-        currentMonthEnd = monthRange.end;
-
-        monthlyAnalyticsSection.classList.toggle('hidden');
+        const { start, end } = getMonthRange(currentDate);
+        currentMonthStart = start;
+        currentMonthEnd = end;
         renderMonthlyAnalytics();
+        monthlyAnalyticsSection.classList.remove('hidden');
     });
 
     prevMonthButton.addEventListener('click', () => {
-        changeMonth(-1);
+        const newDate = new Date(currentMonthStart);
+        newDate.setMonth(newDate.getMonth() - 1);
+        const { start, end } = getMonthRange(newDate);
+        currentMonthStart = start;
+        currentMonthEnd = end;
+        renderMonthlyAnalytics();
     });
 
     nextMonthButton.addEventListener('click', () => {
-        changeMonth(1);
+        const newDate = new Date(currentMonthStart);
+        newDate.setMonth(newDate.getMonth() + 1);
+        const { start, end } = getMonthRange(newDate);
+        currentMonthStart = start;
+        currentMonthEnd = end;
+        renderMonthlyAnalytics();
     });
-
 });
